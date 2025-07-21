@@ -3,29 +3,29 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Button, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import Row from './Row';
+import FieldEditor from './FieldEditor';
 
-interface Props {
-  idx: string;
+interface StructureProps {
+  path: string;
 }
 
-const Builder: React.FC<Props> = ({ idx }) => {
+const Structure: React.FC<StructureProps> = ({ path }) => {
   const { control, getValues } = useFormContext();
   const { fields, append, remove, move } = useFieldArray({
     control,
-    name: idx,
+    name: path,
   });
 
-  const getList = () => getValues(idx);
+  const getFields = () => getValues(path);
 
-  const onDrag = (res: DropResult) => {
-    const { source, destination } = res;
+  const handleDrag = (result: DropResult) => {
+    const { source, destination } = result;
     if (!destination) return;
     if (source.index !== destination.index) move(source.index, destination.index);
   };
 
   return (
-    <DragDropContext onDragEnd={onDrag}>
+    <DragDropContext onDragEnd={handleDrag}>
       <div>
         {fields.length === 0 ? (
           <Empty
@@ -34,29 +34,29 @@ const Builder: React.FC<Props> = ({ idx }) => {
             className="schema-card"
           />
         ) : (
-          <Droppable droppableId={idx}>
-            {(prov) => (
-              <div {...prov.droppableProps} ref={prov.innerRef}>
-                {fields.map((item, i) => (
-                  <Draggable key={item.id} draggableId={item.id} index={i}>
-                    {(dragProv) => (
+          <Droppable droppableId={path}>
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {fields.map((item, idx) => (
+                  <Draggable key={item.id} draggableId={item.id} index={idx}>
+                    {(dragProvided) => (
                       <div
-                        ref={dragProv.innerRef}
-                        {...dragProv.draggableProps}
-                        style={dragProv.draggableProps.style}
+                        ref={dragProvided.innerRef}
+                        {...dragProvided.draggableProps}
+                        style={dragProvided.draggableProps.style}
                       >
-                        <Row
+                        <FieldEditor
+                          path={path}
                           idx={idx}
-                          i={i}
-                          onDel={remove}
-                          getList={getList}
-                          dragProps={dragProv.dragHandleProps ?? undefined}
+                          onRemove={remove}
+                          getFields={getFields}
+                          dragHandle={dragProvided.dragHandleProps ?? undefined}
                         />
                       </div>
                     )}
                   </Draggable>
                 ))}
-                {prov.placeholder}
+                {provided.placeholder}
               </div>
             )}
           </Droppable>
@@ -74,4 +74,4 @@ const Builder: React.FC<Props> = ({ idx }) => {
   );
 };
 
-export default Builder;
+export default Structure;

@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Input, Select, Button, Space, Tooltip } from 'antd';
 import { CloseOutlined, HolderOutlined, CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
-import Builder from './Builder';
+import Structure from './Structure';
 
 const { Option } = Select;
 
-interface Props {
-  idx: string;
-  i: number;
-  onDel: (i: number) => void;
-  getList: () => any[];
-  dragProps?: React.HTMLAttributes<HTMLDivElement>;
+interface FieldEditorProps {
+  path: string;
+  idx: number;
+  onRemove: (idx: number) => void;
+  getFields: () => any[];
+  dragHandle?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
+const FieldEditor: React.FC<FieldEditorProps> = ({ path, idx, onRemove, getFields, dragHandle }) => {
   const { control, watch, formState: { errors } } = useFormContext();
-  const name = `${idx}.${i}`;
-  const field = watch(name);
+  const fieldPath = `${path}.${idx}`;
+  const field = watch(fieldPath);
   const [collapsed, setCollapsed] = useState(false);
-  const err = (errors[idx] as any)?.[i];
+  const error = (errors[path] as any)?.[idx];
 
   return (
     <div className="schema-row">
       <Space align="start">
         <Tooltip title="Drag to reorder">
-          <div {...dragProps} className="drag-handle" style={{ paddingTop: '5px' }}>
+          <div {...dragHandle} className="drag-handle" style={{ paddingTop: '5px' }}>
             <HolderOutlined />
           </div>
         </Tooltip>
@@ -33,18 +33,18 @@ const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
           <Space wrap>
             <Controller
               control={control}
-              name={`${name}.key`}
+              name={`${fieldPath}.key`}
               rules={{
                 required: 'Key is required',
-                validate: (v) => getList().filter((f) => f.key === v).length <= 1 || 'Key must be unique',
+                validate: (v) => getFields().filter((f) => f.key === v).length <= 1 || 'Key must be unique',
               }}
               render={({ field }) => (
-                <Input {...field} placeholder="Field Name" status={err?.key ? 'error' : ''} />
+                <Input {...field} placeholder="Field Name" status={error?.key ? 'error' : ''} />
               )}
             />
             <Controller
               control={control}
-              name={`${name}.type`}
+              name={`${fieldPath}.type`}
               defaultValue="String"
               render={({ field }) => (
                 <Select {...field} style={{ width: 120 }}>
@@ -59,7 +59,7 @@ const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
             {field.type === 'Array' && (
               <Controller
                 control={control}
-                name={`${name}.arrayType`}
+                name={`${fieldPath}.arrayType`}
                 defaultValue="String"
                 render={({ field: arrField }) => (
                   <Select {...arrField} style={{ width: 150 }}>
@@ -72,7 +72,7 @@ const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
               />
             )}
             <Tooltip title="Delete field">
-              <Button icon={<CloseOutlined />} onClick={() => onDel(i)} danger />
+              <Button icon={<CloseOutlined />} onClick={() => onRemove(idx)} danger />
             </Tooltip>
             {(field.type === 'Nested' || (field.type === 'Array' && field.arrayType === 'Nested')) && (
               <Tooltip title={collapsed ? 'Expand' : 'Collapse'}>
@@ -83,10 +83,10 @@ const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
               </Tooltip>
             )}
           </Space>
-          {err?.key && <div className="error-text">{err.key.message}</div>}
+          {error?.key && <div className="error-text">{error.key.message}</div>}
           {!collapsed && (field.type === 'Nested' || (field.type === 'Array' && field.arrayType === 'Nested')) && (
             <div style={{ marginLeft: '30px', marginTop: '10px', borderLeft: '2px solid #d9d9d9', paddingLeft: '15px' }}>
-              <Builder idx={`${name}.fields`} />
+              <Structure path={`${fieldPath}.fields`} />
             </div>
           )}
         </div>
@@ -95,4 +95,4 @@ const Row: React.FC<Props> = ({ idx, i, onDel, getList, dragProps }) => {
   );
 };
 
-export default Row;
+export default FieldEditor;

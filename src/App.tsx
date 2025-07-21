@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Row, Col, Card, Tabs, Button, message } from 'antd';
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
-import Builder from './Builder';
+import Structure from './Structure';
 import { Field } from './types_simple';
 import 'antd/dist/reset.css';
 
@@ -122,7 +122,7 @@ const App: React.FC = () => {
               extra={<Button danger icon={<DeleteOutlined />} onClick={clearAll}>Clear All</Button>}
               bodyStyle={{ padding: 28, minHeight: 480 }}
             >
-              <Builder idx="schema" />
+              <Structure path="schema" />
             </Card>
           </Col>
           <Col xs={24} md={11} style={{ marginBottom: 32 }}>
