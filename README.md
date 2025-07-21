@@ -1,6 +1,6 @@
 # JSON Schema Builder
 
-This is a simple web app to visually build and preview JSON schemas. You can add, remove, and reorder fields, and see the JSON output update in real time.
+This is a web app to visually build and preview JSON schemas. You can add, remove, and reorder fields, and see the JSON output update in real time.
 
 ## What it does
 
