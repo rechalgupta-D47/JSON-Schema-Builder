@@ -1,0 +1,121 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+/* --- Professional UI Enhancements --- */
+.main-bg {
+  background: linear-gradient(135deg, #f0f2f5 0%, #e6ecf3 100%);
+  min-height: 100vh;
+  padding: 32px 0;
+}
+
+.schema-card, .json-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border: none;
+  background: #fff;
+}
+
+.schema-card .ant-card-head {
+  background: #f7f9fb;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.json-card .ant-card-head {
+  background: #f7f9fb;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.add-field-btn {
+  margin-top: 16px;
+  width: 100%;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.json-output {
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.ant-btn {
+  border-radius: 6px !important;
+  font-weight: 500;
+}
+
+.ant-input, .ant-select-selector {
+  border-radius: 6px !important;
+  font-size: 1rem;
+}
+
+.schema-row {
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #e3e8ee;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s;
+}
+.schema-row:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-color: #b3c6e0;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: #b3b3b3;
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.error-text {
+  color: #ff4d4f;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
