@@ -50,31 +50,15 @@ const FieldEditor: React.FC<FieldEditorProps> = ({ path, idx, onRemove, getField
                 <Select {...field} style={{ width: 120 }}>
                   <Option value="String">String</Option>
                   <Option value="Number">Number</Option>
-                  <Option value="Boolean">Boolean</Option>
                   <Option value="Nested">Nested</Option>
-                  <Option value="Array">Array</Option>
                 </Select>
               )}
             />
-            {field.type === 'Array' && (
-              <Controller
-                control={control}
-                name={`${fieldPath}.arrayType`}
-                defaultValue="String"
-                render={({ field: arrField }) => (
-                  <Select {...arrField} style={{ width: 150 }}>
-                    <Option value="String">of Strings</Option>
-                    <Option value="Number">of Numbers</Option>
-                    <Option value="Boolean">of Booleans</Option>
-                    <Option value="Nested">of Nested Objects</Option>
-                  </Select>
-                )}
-              />
-            )}
+            {/* Array type removed for this task */}
             <Tooltip title="Delete field">
               <Button icon={<CloseOutlined />} onClick={() => onRemove(idx)} danger />
             </Tooltip>
-            {(field.type === 'Nested' || (field.type === 'Array' && field.arrayType === 'Nested')) && (
+            {field.type === 'Nested' && (
               <Tooltip title={collapsed ? 'Expand' : 'Collapse'}>
                 <Button
                   icon={collapsed ? <CaretRightOutlined /> : <CaretDownOutlined />}
@@ -84,7 +68,7 @@ const FieldEditor: React.FC<FieldEditorProps> = ({ path, idx, onRemove, getField
             )}
           </Space>
           {error?.key && <div className="error-text">{error.key.message}</div>}
-          {!collapsed && (field.type === 'Nested' || (field.type === 'Array' && field.arrayType === 'Nested')) && (
+          {!collapsed && field.type === 'Nested' && (
             <div style={{ marginLeft: '30px', marginTop: '10px', borderLeft: '2px solid #d9d9d9', paddingLeft: '15px' }}>
               <Structure path={`${fieldPath}.fields`} />
             </div>

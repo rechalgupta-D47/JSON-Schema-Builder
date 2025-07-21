@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Button, Empty } from 'antd';
+import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import FieldEditor from './FieldEditor';
@@ -16,8 +16,12 @@ const Structure: React.FC<StructureProps> = ({ path }) => {
     name: path,
   });
 
+
+  // Get fields for validation in FieldEditor
   const getFields = () => getValues(path);
 
+
+  // Handle drag and drop for reordering fields
   const handleDrag = (result: DropResult) => {
     const { source, destination } = result;
     if (!destination) return;
@@ -27,13 +31,7 @@ const Structure: React.FC<StructureProps> = ({ path }) => {
   return (
     <DragDropContext onDragEnd={handleDrag}>
       <div>
-        {fields.length === 0 ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description="No fields defined. Add one below."
-            className="schema-card"
-          />
-        ) : (
+        {fields.length > 0 && (
           <Droppable droppableId={path}>
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>

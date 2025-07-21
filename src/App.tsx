@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Row, Col, Card, Tabs, Button, message } from 'antd';
-import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Tabs, Button } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import Structure from './Structure';
 import { Field } from './types_simple';
 import 'antd/dist/reset.css';
@@ -18,7 +18,7 @@ const loadSchema = (): { schema: Field[] } => {
   } catch (error) {
     console.error("Failed to load or parse schema from localStorage", error);
   }
-  // Return a default schema if nothing is found or an error occurs
+  
   return {
     schema: [
       { id: 'field1', key: 'user', type: 'Nested', fields: [
@@ -38,7 +38,6 @@ const App: React.FC = () => {
   const { watch, reset } = methods;
   const [json, setJson] = useState({});
 
-  // Shorter generateJson
   const genJson = useCallback((schema: Field[]): any => {
     const res: any = {};
     if (!schema) return res;
@@ -47,19 +46,7 @@ const App: React.FC = () => {
         switch (f.type) {
           case 'String': res[f.key] = 'Sample String'; break;
           case 'Number': res[f.key] = 12345; break;
-          case 'Boolean': res[f.key] = true; break;
           case 'Nested': res[f.key] = genJson(f.fields || []); break;
-          case 'Array':
-            if (f.arrayType === 'Nested') {
-              res[f.key] = [genJson(f.fields || [])];
-            } else if (f.arrayType === 'String') {
-              res[f.key] = ['String 1', 'String 2'];
-            } else if (f.arrayType === 'Number') {
-              res[f.key] = [1, 2, 3];
-            } else if (f.arrayType === 'Boolean') {
-              res[f.key] = [true, false];
-            }
-            break;
         }
       }
     });
@@ -80,26 +67,24 @@ const App: React.FC = () => {
     return () => sub.unsubscribe();
   }, [watch, methods, genJson]);
 
-  const copyJson = () => {
-    navigator.clipboard.writeText(JSON.stringify(json, null, 2));
-    message.success('JSON copied to clipboard!');
-  };
+
 
   const clearAll = () => {
     reset({ schema: [] });
-    message.info('Schema cleared.');
   };
 
-    return (
+
+
+  return (
     <FormProvider {...methods}>
-      <div className="main-bg">
+      <div className="main-bg" style={{ minHeight: '100vh', height: '100vh', display: 'flex', flexDirection: 'column', padding: 0, background: '#a4d0e2ff' }}>
         <header style={{
           width: '100%',
           background: 'linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%)',
-          padding: '32px 0 24px 0',
-          marginBottom: 32,
-          boxShadow: '0 2px 12px rgba(58,123,213,0.08)',
-          borderRadius: '0 0 24px 24px',
+          padding: '18px 0 12px 0',
+          marginBottom: 18,
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.1)',
+          borderRadius: '0 0 20px 20px',
           textAlign: 'center',
         }}>
           <h1 style={{
@@ -114,43 +99,60 @@ const App: React.FC = () => {
             Visually design and preview your JSON schemas in real time
           </p>
         </header>
-        <Row gutter={32} justify="center">
-          <Col xs={24} md={11} style={{ marginBottom: 32 }}>
+        <div style={{
+          display: 'flex',
+          gap: 32,
+          justifyContent: 'center',
+          alignItems: 'stretch',
+          transition: 'all 0.3s',
+          maxWidth: 1400,
+          margin: '0 auto',
+          padding: '0 16px',
+          flex: 1,
+          minHeight: 0,
+        }}>
+          <div style={{ width: 540, minWidth: 360, maxWidth: 800, display: 'flex', flexDirection: 'column' }}>
             <Card 
               className="schema-card"
-              title={<span style={{ fontWeight: 600, fontSize: '1.15rem', color: '#3a7bd5' }}>Schema Editor</span>}
-              extra={<Button danger icon={<DeleteOutlined />} onClick={clearAll}>Clear All</Button>}
-              bodyStyle={{ padding: 28, minHeight: 480 }}
+              title={<span style={{ fontWeight: 600, fontSize: '1.13rem', color: '#3a7bd5', letterSpacing: 0.5 }}>Schema Editor</span>}
+              extra={<Button danger icon={<DeleteOutlined />} onClick={clearAll} style={{ fontWeight: 500, padding: '0 14px' }}>Delete</Button>}
+              bodyStyle={{ padding: 22, minHeight: 0, height: '100%' }}
+              style={{ borderRadius: 14, boxShadow: '0 2px 12px rgba(58,123,213,0.06)', height: '100%', display: 'flex', flexDirection: 'column' }}
             >
-              <Structure path="schema" />
+              <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+                <Structure path="schema" />
+              </div>
             </Card>
-          </Col>
-          <Col xs={24} md={11} style={{ marginBottom: 32 }}>
+          </div>
+          <div style={{ width: 540, minWidth: 360, maxWidth: 800, transition: 'width 0.3s, min-width 0.3s', overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Card 
               className="json-card"
-              title={<span style={{ fontWeight: 600, fontSize: '1.15rem', color: '#00b4d8' }}>Live JSON Output</span>}
-              bodyStyle={{ padding: 28, minHeight: 480 }}
+              title={<span style={{ fontWeight: 600, fontSize: '1.13rem', color: '#00b4d8', letterSpacing: 0.5 }}>Live JSON Output</span>}
+              bodyStyle={{ padding: 0, minHeight: 0, height: '100%' }}
+              style={{ borderRadius: 14, boxShadow: '0 2px 12px rgba(0,180,216,0.06)', height: '100%', display: 'flex', flexDirection: 'column' }}
             >
-              <Tabs 
-                defaultActiveKey="1" 
-                tabBarExtraContent={<Button icon={<CopyOutlined />} onClick={copyJson}>Copy</Button>}
-                tabBarStyle={{ marginBottom: 0 }}
-              >
-                <TabPane tab="JSON" key="1">
-                  <pre className="json-output">
-                    {JSON.stringify(json, null, 2)}
-                  </pre>
-                </TabPane>
-              </Tabs>
+              <div style={{ flex: 1, minHeight: 0, overflow: 'auto', padding: 22 }}>
+                <Tabs 
+                  defaultActiveKey="1" 
+                  tabBarStyle={{ marginBottom: 0 }}
+                >
+                  <TabPane tab="JSON" key="1">
+                    <pre className="json-output" style={{ fontSize: 15, padding: 12, borderRadius: 8, background: '#f8fafc', margin: 0 }}>
+                      {JSON.stringify(json, null, 2)}
+                    </pre>
+                  </TabPane>
+                </Tabs>
+              </div>
             </Card>
-          </Col>
-        </Row>
+          </div>
+        </div>
         <footer style={{
           textAlign: 'center',
-          color: '#b0b8c1',
-          fontSize: '1rem',
-          marginTop: 24,
-          marginBottom: 8
+          color: '#1f2326ff',
+          fontSize: '1.02rem',
+          marginTop: 18,
+          marginBottom: 8,
+          letterSpacing: 0.2,
         }}>
           &copy; {new Date().getFullYear()} JSON Schema Builder. All rights reserved.
         </footer>
